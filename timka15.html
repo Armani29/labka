@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lab15</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #a0e9f3;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            }
+            .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            }
+            .task {
+            background-color: #3498db;
+            color: #aff3f0;
+            padding: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            }
+
+            .solution {
+            background-color: #f1b0b0;
+            padding: 10px;
+            border: 1px solid #a8e9cb;
+            border-radius: 5px;
+            text-align: left;
+            margin: 10px 0;
+            }
+            .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            }
+            .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f0bcbc;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            }
+            .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            }
+            input[type="text"], button {
+            padding: 10px;
+            margin: 5px;
+            width: 100px;
+            }
+            button {
+            background-color: #db34c5;
+            color: #fff;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            }
+            #result {
+            font-weight: bold;
+            margin: 10px;
+            }
+    </style>
+</head>
+<body>
+    <div class="task" onclick="openModal('task1')">Задача 1. Вычисление
+        факториала</div>
+        <div class="solution" id="solution1"></div>
+        <div class="task" onclick="openModal('task2')">Задача 2. Проверка на
+        простое число</div>
+        <div class="solution" id="solution2"></div>
+        <div class="task" onclick="openCalculator()">Задача 3. Создайте
+        калькулятор с помощью CSS</div>
+        <div class="solution" id="calculator"></div>
+        <div class="task" onclick="startQuiz()">Задача 4. Создайте JavaScript
+        Quiz с 3 вопросами</div>
+        <div class="solution" id="quiz"></div>
+        <div id="modal" class="modal">
+        <div class="modal-content">
+        <span class="close-button" onclick="closeModal()">&times;</span>
+        <h2>Введите значения:</h2>
+        <input type="text" id="inputValue" placeholder="Введите
+        значение">
+        <button onclick="handleInput()">Подтвердить</button>
+        </div>
+        </div>
+        <script>
+        let currentTask = "";
+        function openModal(task) {
+        currentTask = task;
+        const modal = document.getElementById("modal");
+        modal.style.display = "block";
+        }
+        function openCalculator() {
+        const calculatorHTML = `
+        <h2>Калькулятор</h2>
+        <input type="text" id="num1" placeholder="Число 1">
+        <input type="text" id="num2" placeholder="Число 2">
+        <button onclick="calculate()">Вычислить</button>
+        <div id="calcResult"></div>
+        `;
+        document.getElementById("calculator").innerHTML = calculatorHTML;
+        }
+        function closeModal() {
+        const modal = document.getElementById("modal");
+        modal.style.display = "none";
+        }
+        function handleInput() {
+        const inputValue = document.getElementById("inputValue").value;
+        let result;
+        if (currentTask === "task1") {
+        result = calculateFactorial(parseInt(inputValue));
+        document.getElementById("solution1").innerHTML = `Факториал
+        числа ${inputValue} равен ${result}`;
+        } else if (currentTask === "task2") {
+        result = checkPrimeNumber(parseInt(inputValue));
+        const message = result ? "Это простое число" : "Это не простое        число";
+        document.getElementById("solution2").innerHTML = message;
+        }
+        closeModal();
+        }
+        function calculateFactorial(n) {
+        if (n === 0 || n === 1) {
+        return 1;
+        } else {
+        return n * calculateFactorial(n - 1);
+        }
+        }
+        function checkPrimeNumber(n) {
+        if (n <= 1) {
+        return false;
+        }
+        for (let i = 2; i <= Math.sqrt(n); i++) {
+        if (n % i === 0) {
+        return false;
+        }
+        }
+        return true;
+        }
+        const questions = [
+        {
+        question: "Что такое HTML?",
+        options: ["Hyper Text Markup Language", "Highly Texted Modern        Language", "Hyperlink and Text Markup Language"],
+        correctAnswer: 0,
+        },
+        {
+        question: "Какой язык программирования используется для        создания динамических веб-сайтов?",
+        options: ["HTML", "CSS", "JavaScript"],
+        correctAnswer: 2,
+        },
+        {
+        question: "Что такое CSS?",
+        options: ["Cascading Style Sheet", "Computer Style Sheet",
+        "Creative Style Sheet"],
+        correctAnswer: 0,
+        },
+        ];
+        function startQuiz() {
+        const quizHTML = `
+        <h2>JavaScript Quiz</h2>
+        <div id="question"></div>
+        <div id="options"></div>
+        <div id="result"></div>
+        `;
+        document.getElementById("quiz").innerHTML = quizHTML;
+        const questionElement = document.getElementById("question");
+        const optionsElement = document.getElementById("options");
+        const resultElement = document.getElementById("result");
+        let currentQuestionIndex = 0;
+        displayQuestion(currentQuestionIndex);
+        function displayQuestion(index) {
+        if (index < questions.length) {
+        const question = questions[index];
+        questionElement.textContent = question.question;
+        optionsElement.innerHTML = "";
+        question.options.forEach((option, i) => {
+        const optionElement = document.createElement("button");
+        optionElement.textContent = option;
+        optionElement.onclick = () => checkAnswer(index, i);
+        optionsElement.appendChild(optionElement);
+        });
+        } else {
+        resultElement.textContent = "Викторина завершена!";
+        }
+        }
+        function checkAnswer(questionIndex, selectedOptionIndex) {
+        const correctAnswerIndex =
+        questions[questionIndex].correctAnswer;
+        if (selectedOptionIndex === correctAnswerIndex) {
+        resultElement.textContent = "Правильно!";
+        } else {
+        resultElement.textContent = "Неправильно. Правильный ответ: "
+        + questions[questionIndex].options[correctAnswerIndex];
+        }
+        currentQuestionIndex++;
+        setTimeout(() => {
+        displayQuestion(currentQuestionIndex);
+        resultElement.textContent = "";
+        }, 1000);
+        }
+        }
+        function calculate() {
+        const num1 = parseFloat(document.getElementById("num1").value);
+        const num2 = parseFloat(document.getElementById("num2").value);
+        const result = num1 + num2;
+        document.getElementById("calcResult").textContent = `Результат:
+        ${result}`;
+        }
+        </script>
+</body>
+</html>
